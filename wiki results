@@ -1,0 +1,46 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul 23 23:23:05 2015
+
+@author: Aaron
+"""
+import requests
+from bs4 import BeautifulSoup
+import json
+#url = 'https://en.wikipedia.org/w/index.php?action=raw&title=Yosdenis_Cedeno'
+#r = requests.get(url)
+#soup = BeautifulSoup(r.content)
+delchars = '[]|'
+def clean_results(res, fighter='Jose', delchars='[]|'):
+    '''cleans up list of wiki results for one fight'''
+    result = res[0][8:-1]
+    opponent = res[2][:-1].translate(None, delchars)
+    finish = res[3][1:-1]
+    event = res[4][:-1].translate(None, delchars)
+    date = res[5][7:-4]
+    location = res[8][:-1].translate(None, delchars)
+    final = {'result':result, 'opponent': opponent, 'finish': finish,
+             'event':event, 'date':date, 'location':location}
+    return final
+
+new = open('/Users/Aaron/Documents/soup.txt', 'r')
+locs = []
+rlines = new.readlines()
+
+for i, line in enumerate(rlines):
+    if '{{no2}}' in line:
+        locs.append(rlines[i:i+9])
+
+new.close()
+
+sample = locs[0]
+
+cleaned = [clean_results(x) for x in locs]
+
+for fight in cleaned:
+    print fight['location']
+
+
+
+
+
